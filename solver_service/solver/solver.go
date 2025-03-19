@@ -1,13 +1,8 @@
 package solver
 
-func IsSafe(mat [][]int, i, j, num int, row, col, box []int) bool {
-	if (row[i]&(1<<num)) != 0 || (col[j]&(1<<num)) != 0 || (box[i/3*3+j/3]&(1<<num)) != 0 {
-		return false
-	}
-	return true
-}
+import "example.com/sudoku-solver/validators"
 
-func SudokuSolverRec(mat [][]int, i, j int, row, col, box []int) bool {
+func SudokuSolverRec(mat [][]int, i, j int, valids []validators.Validator) bool {
 	length := len(mat)
 
 	// Дошли до последней клетки последней строки
@@ -23,28 +18,36 @@ func SudokuSolverRec(mat [][]int, i, j int, row, col, box []int) bool {
 
 	// Если клетка заполнена, то идем дальше
 	if mat[i][j] != 0 {
-		return SudokuSolverRec(mat, i, j+1, row, col, box)
+		return SudokuSolverRec(mat, i, j+1, valids)
 	}
 
 	for num := 1; num < length+1; num++ {
 		// Проверяем подходит ли число
-		if IsSafe(mat, i, j, num, row, col, box) {
+		isValid := true
+		for _, v := range valids {
+			if !v.IsValid(mat, i, j, num) {
+				isValid = false
+				break
+			}
+		}
+
+		if isValid {
 			mat[i][j] = num
 
 			// Обновляем маску
-			row[i] |= (1 << num)
-			col[j] |= (1 << num)
-			box[i/3*3+j/3] |= (1 << num)
+			for _, v := range valids {
+				v.MarkUsed(i, j, num)
+			}
 
-			if SudokuSolverRec(mat, i, j+1, row, col, box) {
+			if SudokuSolverRec(mat, i, j+1, valids) {
 				return true
 			}
 
 			// Убираем число из маски
 			mat[i][j] = 0
-			row[i] = row[i] &^ (1 << num)
-			col[j] = col[j] &^ (1 << num)
-			box[i/3*3+j/3] = box[i/3*3+j/3] &^ (1 << num)
+			for _, v := range valids {
+				v.UnmarkUsed(i, j, num)
+			}
 		}
 	}
 
@@ -53,20 +56,23 @@ func SudokuSolverRec(mat [][]int, i, j int, row, col, box []int) bool {
 
 func SolveSudoku(mat [][]int) bool {
 	length := len(mat)
-	row := make([]int, length)
-	col := make([]int, length)
-	box := make([]int, length)
+
+	valids := []validators.Validator{
+		validators.NewRowValidator(length),
+		validators.NewColValidator(length),
+		validators.NewBoxValidator(length),
+	}
 
 	// Создаем битовую маску из чисел
 	for i := range length {
 		for j := range length {
 			if mat[i][j] != 0 {
-				row[i] |= (1 << mat[i][j])
-				col[j] |= (1 << mat[i][j])
-				box[(i/3)*3+j/3] |= (1 << mat[i][j])
+				for _, v := range valids {
+					v.MarkUsed(i, j, mat[i][j])
+				}
 			}
 		}
 	}
 
-	return SudokuSolverRec(mat, 0, 0, row, col, box)
+	return SudokuSolverRec(mat, 0, 0, valids)
 }
