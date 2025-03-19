@@ -8,7 +8,7 @@ func NewColValidator(length int) *ColValidator {
 	return &ColValidator{masks: make([]int, length)}
 }
 
-func (cv *ColValidator) IsValid(mat [][]int, i, j, num int) bool {
+func (cv *ColValidator) IsValid(i, j, num int) bool {
 	return (cv.masks[j] & (1 << num)) == 0
 }
 

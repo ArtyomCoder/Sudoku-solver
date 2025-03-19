@@ -25,7 +25,7 @@ func SudokuSolverRec(mat [][]int, i, j int, valids []validators.Validator) bool 
 		// Проверяем подходит ли число
 		isValid := true
 		for _, v := range valids {
-			if !v.IsValid(mat, i, j, num) {
+			if !v.IsValid(i, j, num) {
 				isValid = false
 				break
 			}
