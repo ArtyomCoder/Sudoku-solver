@@ -1,38 +1,4 @@
-package main
-
-import "fmt"
-
-func main() {
-	mat := [][]int{
-		{3, 0, 6, 5, 0, 8, 4, 0, 0},
-		{5, 2, 0, 0, 0, 0, 0, 0, 0},
-		{0, 8, 7, 0, 0, 0, 0, 3, 1},
-		{0, 0, 3, 0, 1, 0, 0, 8, 0},
-		{9, 0, 0, 8, 6, 3, 0, 0, 5},
-		{0, 5, 0, 0, 9, 0, 6, 0, 0},
-		{1, 3, 0, 0, 0, 0, 2, 5, 0},
-		{0, 0, 0, 0, 0, 0, 0, 7, 4},
-		{0, 0, 5, 2, 0, 6, 3, 0, 0},
-	}
-
-	fmt.Println("Нерешенное судоку:")
-	PrintMat(mat)
-
-	fmt.Println()
-
-	fmt.Println("Решенное судоку:")
-	SolveSudoku(mat)
-	PrintMat(mat)
-}
-
-func PrintMat(mat [][]int) {
-	for _, row := range mat {
-		for _, elem := range row {
-			fmt.Print(elem, " ")
-		}
-		fmt.Println()
-	}
-}
+package solver
 
 func IsSafe(mat [][]int, i, j, num int, row, col, box []int) bool {
 	if (row[i]&(1<<num)) != 0 || (col[j]&(1<<num)) != 0 || (box[i/3*3+j/3]&(1<<num)) != 0 {
@@ -85,7 +51,7 @@ func SudokuSolverRec(mat [][]int, i, j int, row, col, box []int) bool {
 	return false
 }
 
-func SolveSudoku(mat [][]int) {
+func SolveSudoku(mat [][]int) bool {
 	length := len(mat)
 	row := make([]int, length)
 	col := make([]int, length)
@@ -102,5 +68,5 @@ func SolveSudoku(mat [][]int) {
 		}
 	}
 
-	SudokuSolverRec(mat, 0, 0, row, col, box)
+	return SudokuSolverRec(mat, 0, 0, row, col, box)
 }
