@@ -2,6 +2,10 @@ package solver
 
 import "example.com/sudoku-solver/validators"
 
+type SudokuSolver interface{
+	Solve(mat [][]int) bool
+}
+
 func SudokuSolverRec(mat [][]int, i, j int, valids []validators.Validator) bool {
 	length := len(mat)
 

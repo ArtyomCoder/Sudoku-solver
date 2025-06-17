@@ -8,13 +8,13 @@ import (
 
 func main() {
 	mat := [][]int{
-		{3, 0, 6, 5, 0, 8, 4, 0, 0},
-		{5, 2, 0, 0, 0, 0, 0, 0, 0},
-		{0, 8, 7, 0, 0, 0, 0, 3, 1},
-		{0, 0, 3, 0, 1, 0, 0, 8, 0},
-		{9, 0, 0, 8, 6, 3, 0, 0, 5},
-		{0, 5, 0, 0, 9, 0, 6, 0, 0},
-		{1, 3, 0, 0, 0, 0, 2, 5, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{5, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 8, 0, 0, 0, 0, 0, 3, 1},
+		{0, 0, 3, 0, 0, 0, 0, 8, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 5, 0, 0, 0, 0, 6, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 7, 4},
 		{0, 0, 5, 2, 0, 6, 3, 0, 0},
 	}
@@ -25,7 +25,10 @@ func main() {
 	fmt.Println()
 
 	fmt.Println("Решенное судоку:")
-	solver.SolveSudoku(mat)
+	// sudokuSolver := solver.RegularSudoku{}
+	sudokuSolver := solver.RegularXSudoku{}
+	isSolved := sudokuSolver.Solve(mat)
+	fmt.Println(isSolved)
 	PrintMat(mat)
 
 	// r := gin.Default()
